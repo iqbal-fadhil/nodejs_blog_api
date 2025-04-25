@@ -1,9 +1,13 @@
-const mongoose = require("mongoose");
+const { DataTypes } = require("sequelize");
+const sequelize = require("../config/database");
+const User = require("./User");
 
-const postSchema = new mongoose.Schema({
-  title: String,
-  content: String,
-  author: { type: mongoose.Schema.Types.ObjectId, ref: "User" }
-}, { timestamps: true });
+const Post = sequelize.define("Post", {
+  title: DataTypes.STRING,
+  content: DataTypes.TEXT
+});
 
-module.exports = mongoose.model("Post", postSchema);
+Post.belongsTo(User, { foreignKey: "authorId" });
+User.hasMany(Post, { foreignKey: "authorId" });
+
+module.exports = Post;
